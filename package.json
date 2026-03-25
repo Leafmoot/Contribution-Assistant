@@ -1,5 +1,5 @@
 {
-  "name": "paycheck-calculator",
+  "name": "contribution-calculator",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -21,21 +21,3 @@
     "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
   }
 }
-```
-
-4. Click **"Commit changes"**
-
----
-
-#### **Step 6: Verify GitHub Structure**
-
-Your repo should look like this:
-```
-your-calculator-name/
-├── public/
-│   └── index.html
-├── src/
-│   ├── App.js
-│   └── index.js
-├── package.json  ← Just fixed
-└── other files
