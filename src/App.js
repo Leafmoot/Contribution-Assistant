@@ -934,7 +934,7 @@ function EmptyResults({ isCalculating }) {
             textAlign: "center",
           }}
         >
-          {isCalculating ? "Calculating…" : "Your results will appear here"}
+          {isCalculating ? "Calculating…" : "Calculate Your Path to the Limit"}
         </div>
         {!isCalculating && (
           <div
@@ -946,8 +946,9 @@ function EmptyResults({ isCalculating }) {
               lineHeight: 1.55,
             }}
           >
-            Fill in your details and click <strong>Calculate</strong> to see
-            your personalized contribution rates.
+            Enter your salary and current contributions to see exactly 
+            what percentage (or dollar amount) you need to contribute 
+            each paycheck to reach your 2026 IRS maximum.
           </div>
         )}
       </div>
