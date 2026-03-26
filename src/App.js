@@ -108,10 +108,13 @@ const T = {
   fontMono: "'JetBrains Mono', 'Fira Code', monospace",
 };
 
-// Tooltip component for info icons
+// Tooltip component with smart positioning
 function InfoTooltip({ text }) {
   const [show, setShow] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [position, setPosition] = useState({ top: true, left: true });
+  const buttonRef = useRef(null);
+  const tooltipRef = useRef(null);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
@@ -120,11 +123,112 @@ function InfoTooltip({ text }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    if (show && !isMobile && buttonRef.current && tooltipRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const tooltipRect = tooltipRef.current.getBoundingClientRect();
+
+      // Find the scrollable parent container
+      let scrollParent = buttonRef.current.parentElement;
+      while (scrollParent && scrollParent !== document.body) {
+        const overflow = window.getComputedStyle(scrollParent).overflowY;
+        if (overflow === "auto" || overflow === "scroll") {
+          break;
+        }
+        scrollParent = scrollParent.parentElement;
+      }
+
+      // Get container boundaries
+      const containerRect = scrollParent
+        ? scrollParent.getBoundingClientRect()
+        : {
+            left: 0,
+            right: window.innerWidth,
+            top: 0,
+            bottom: window.innerHeight,
+          };
+
+      // Check if tooltip would go off container or screen
+      const wouldOverflowRight =
+        buttonRect.left + tooltipRect.width / 2 > containerRect.right - 10;
+      const wouldOverflowLeft =
+        buttonRect.left - tooltipRect.width / 2 < containerRect.left + 10;
+      const wouldOverflowTop =
+        buttonRect.top - tooltipRect.height - 8 < containerRect.top + 10;
+
+      setPosition({
+        top: !wouldOverflowTop,
+        left: wouldOverflowLeft ? false : wouldOverflowRight ? true : "center",
+      });
+    }
+  }, [show, isMobile]);
+
+  const getTooltipStyle = () => {
+    if (isMobile) {
+      return {
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+      };
+    }
+
+    const baseStyle = {
+      position: "absolute",
+      zIndex: 999,
+    };
+
+    if (position.top) {
+      baseStyle.bottom = "calc(100% + 8px)";
+    } else {
+      baseStyle.top = "calc(100% + 8px)";
+    }
+
+    if (position.left === "center") {
+      baseStyle.left = "50%";
+      baseStyle.transform = "translateX(-50%)";
+    } else if (position.left === false) {
+      baseStyle.left = "0";
+    } else {
+      baseStyle.right = "0";
+    }
+
+    return baseStyle;
+  };
+
+  const getArrowStyle = () => {
+    const baseStyle = {
+      position: "absolute",
+      width: 8,
+      height: 8,
+      background: T.text,
+    };
+
+    if (position.top) {
+      baseStyle.bottom = -4;
+      baseStyle.clipPath = "polygon(50% 100%, 0% 0%, 100% 0%)";
+    } else {
+      baseStyle.top = -4;
+      baseStyle.clipPath = "polygon(50% 0%, 0% 100%, 100% 100%)";
+    }
+
+    if (position.left === "center") {
+      baseStyle.left = "50%";
+      baseStyle.transform = "translateX(-50%)";
+    } else if (position.left === false) {
+      baseStyle.left = "12px";
+    } else {
+      baseStyle.right = "12px";
+    }
+
+    return baseStyle;
+  };
+
   return (
     <div
       style={{ position: "relative", display: "inline-block", marginLeft: 4 }}
     >
       <button
+        ref={buttonRef}
         type="button"
         onMouseEnter={() => !isMobile && setShow(true)}
         onMouseLeave={() => !isMobile && setShow(false)}
@@ -164,6 +268,7 @@ function InfoTooltip({ text }) {
             />
           )}
           <div
+            ref={tooltipRef}
             style={{
               position: isMobile ? "fixed" : "absolute",
               zIndex: 999,
@@ -172,37 +277,15 @@ function InfoTooltip({ text }) {
               padding: "8px 10px",
               borderRadius: T.radius,
               fontSize: "0.72rem",
+              fontFamily: T.font,
               lineHeight: 1.5,
               width: isMobile ? "calc(100vw - 48px)" : "220px",
               boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-              ...(isMobile
-                ? {
-                    left: "50%",
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }
-                : {
-                    top: "calc(100% + 4px)",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                  }),
+              ...getTooltipStyle(),
             }}
           >
             {text}
-            {!isMobile && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: -4,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  width: 8,
-                  height: 8,
-                  background: T.text,
-                  clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
-                }}
-              />
-            )}
+            {!isMobile && <div style={getArrowStyle()} />}
           </div>
         </>
       )}
@@ -212,7 +295,14 @@ function InfoTooltip({ text }) {
 
 function Label({ children, sub, tooltip }) {
   return (
-    <div style={{ marginBottom: 4 }}>
+    <div
+      style={{
+        marginBottom: 4,
+        minHeight: 20, // Ensures consistent height even with single-line labels
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
       <span
         style={{
           fontSize: "0.82rem",
@@ -588,6 +678,7 @@ function SummaryLine({ label, value, color, bold, indent, dimmed }) {
           fontFamily: T.fontMono,
           fontWeight: bold ? 700 : 500,
           color: color || T.text,
+          fontVariantNumeric: "tabular-nums",
         }}
       >
         {value}
@@ -614,6 +705,7 @@ function StatCard({ label, value, sub, subLines, color, small }) {
         boxShadow:
           "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)",
       }}
+      className="mobile-padding-sm print-break-avoid"
     >
       <div style={{ width: "100%", textAlign: "center" }}>
         <div
@@ -632,14 +724,15 @@ function StatCard({ label, value, sub, subLines, color, small }) {
         <div
           style={{
             fontSize: small ? "1.8rem" : "2.5rem",
-            fontWeight: 700,
+            fontWeight: 600,
             color: "#1E293B",
             lineHeight: 1,
             fontFamily: T.fontMono,
-            letterSpacing: "-0.02em",
+            letterSpacing: "-0.03em",
             fontVariantNumeric: "tabular-nums",
             marginBottom: 8,
           }}
+          className="mobile-text-sm"
         >
           {value}
         </div>
@@ -1527,6 +1620,56 @@ export default function App() {
             -moz-appearance: textfield;
             appearance: textfield;
           }
+          
+          /* Details arrow rotation */
+          details[open] .details-arrow {
+            transform: rotate(180deg);
+          }
+          
+          /* Mobile responsive styles */
+          @media (max-width: 640px) {
+            .mobile-stack {
+              grid-template-columns: 1fr !important;
+            }
+            .mobile-text-sm {
+              font-size: 1.6rem !important;
+            }
+            .mobile-padding-sm {
+              padding: 16px 18px !important;
+            }
+          }
+          
+          /* Print styles */
+          @media print {
+            .no-print {
+              display: none !important;
+            }
+            body {
+              background: white !important;
+            }
+            .print-break-avoid {
+              break-inside: avoid;
+              page-break-inside: avoid;
+            }
+            /* Force single column layout for print */
+            [style*="grid-template-columns"] {
+              display: block !important;
+            }
+            /* Optimize spacing for print */
+            h1 {
+              font-size: 18pt !important;
+              margin-bottom: 12pt !important;
+            }
+            /* Ensure cards print well */
+            [style*="borderRadius"] {
+              border: 1px solid #ddd !important;
+              box-shadow: none !important;
+            }
+            /* Remove backgrounds for print */
+            [style*="background: #F"] {
+              background: white !important;
+            }
+          }
         `}
       </style>
 
@@ -1638,6 +1781,7 @@ export default function App() {
                 gap: 10,
                 marginBottom: 10,
               }}
+              className="mobile-stack"
             >
               <div>
                 <Label tooltip="Your total annual salary before any deductions.">
@@ -1710,6 +1854,7 @@ export default function App() {
                 gap: 10,
                 marginBottom: 10,
               }}
+              className="mobile-stack"
             >
               <div>
                 <Label tooltip="How often you receive paychecks.">
@@ -1762,6 +1907,7 @@ export default function App() {
                   gap: 10,
                   marginTop: 5,
                 }}
+                className="mobile-stack"
               >
                 <div>
                   <div
@@ -2554,6 +2700,7 @@ export default function App() {
                       color: "#1E293B",
                       letterSpacing: "-0.02em",
                       fontFamily: T.fontMono,
+                      fontVariantNumeric: "tabular-nums",
                     }}
                   >
                     {result.contribMode === "dollar"
@@ -2701,12 +2848,6 @@ export default function App() {
                     />
                   </div>
                 </details>
-
-                <style>{`
-                  details[open] .details-arrow {
-                    transform: rotate(180deg);
-                  }
-                `}</style>
 
                 <ResultNotices result={result} />
               </div>
