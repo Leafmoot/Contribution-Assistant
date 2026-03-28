@@ -675,7 +675,7 @@ function SummaryLine({ label, value, color, bold, indent, dimmed }) {
       <span
         style={{
           fontSize: bold ? "0.84rem" : "0.8rem",
-          fontFamily: T.fontMono,
+          fontFamily: T.font,
           fontWeight: bold ? 700 : 500,
           color: color || T.text,
           fontVariantNumeric: "tabular-nums",
@@ -727,7 +727,7 @@ function StatCard({ label, value, sub, subLines, color, small }) {
             fontWeight: 600,
             color: "#1E293B",
             lineHeight: 1,
-            fontFamily: T.fontMono,
+            fontFamily: T.font,
             letterSpacing: "-0.03em",
             fontVariantNumeric: "tabular-nums",
             marginBottom: 8,
@@ -2707,7 +2707,7 @@ export default function App() {
                       fontWeight: 700,
                       color: "#1E293B",
                       letterSpacing: "-0.02em",
-                      fontFamily: T.fontMono,
+                      fontFamily: T.font,
                       fontVariantNumeric: "tabular-nums",
                     }}
                   >
