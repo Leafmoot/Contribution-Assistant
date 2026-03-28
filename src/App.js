@@ -946,9 +946,9 @@ function EmptyResults({ isCalculating }) {
               lineHeight: 1.55,
             }}
           >
-            Enter your salary and current contributions to see exactly 
-            what percentage (or dollar amount) you need to contribute 
-            each paycheck to reach your 2026 IRS maximum.
+            Enter your salary and current contributions to see exactly what
+            percentage (or dollar amount) you need to contribute each paycheck
+            to reach your 2026 IRS maximum.
           </div>
         )}
       </div>
@@ -2531,7 +2531,15 @@ export default function App() {
                 <SummaryLine label="Remaining" value={fc(0)} bold />
 
                 {/* Collapsible Details */}
-                <details style={{ marginTop: 12 }}>
+                <details
+                  style={{
+                    background: "#F9FAFB",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: "8px",
+                    padding: "12px",
+                    marginTop: 12,
+                  }}
+                >
                   <summary
                     style={{
                       cursor: "pointer",
@@ -2567,7 +2575,6 @@ export default function App() {
                   <div
                     style={{
                       paddingTop: 8,
-                      borderTop: `1px solid ${T.border}`,
                       marginTop: 8,
                     }}
                   >
@@ -2759,7 +2766,15 @@ export default function App() {
                 />
 
                 {/* Collapsible Details */}
-                <details style={{ marginTop: 12 }}>
+                <details
+                  style={{
+                    background: "#F9FAFB",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: "8px",
+                    padding: "12px",
+                    marginTop: 12,
+                  }}
+                >
                   <summary
                     style={{
                       cursor: "pointer",
