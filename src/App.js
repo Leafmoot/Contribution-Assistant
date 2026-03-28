@@ -2545,15 +2545,16 @@ export default function App() {
                       cursor: "pointer",
                       fontSize: "0.78rem",
                       fontWeight: 600,
-                      color: T.textSub,
+                      color: "#1F2937",
                       padding: "8px 0",
                       userSelect: "none",
                       listStyle: "none",
                       display: "flex",
                       alignItems: "center",
-                      gap: 6,
+                      justifyContent: "space-between",
                     }}
                   >
+                    <span>View Calculation Details</span>
                     <svg
                       width="12"
                       height="12"
@@ -2570,7 +2571,6 @@ export default function App() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    View Calculation Details
                   </summary>
                   <div
                     style={{
@@ -2780,15 +2780,16 @@ export default function App() {
                       cursor: "pointer",
                       fontSize: "0.78rem",
                       fontWeight: 600,
-                      color: T.textSub,
+                      color: "#1F2937",
                       padding: "8px 0",
                       userSelect: "none",
                       listStyle: "none",
                       display: "flex",
                       alignItems: "center",
-                      gap: 6,
+                      justifyContent: "space-between",
                     }}
                   >
+                    <span>View Calculation Details</span>
                     <svg
                       width="12"
                       height="12"
@@ -2805,12 +2806,10 @@ export default function App() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    View Calculation Details
                   </summary>
                   <div
                     style={{
                       paddingTop: 8,
-                      borderTop: `1px solid ${T.border}`,
                       marginTop: 8,
                     }}
                   >
@@ -2973,21 +2972,28 @@ export default function App() {
                 />
 
                 {/* Collapsible Details */}
-                <details style={{ marginTop: 12 }}>
+                <details style={{
+                    background: "#F9FAFB",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: "8px",
+                    padding: "12px",
+                    marginTop: 12,
+                  }}>
                   <summary
                     style={{
                       cursor: "pointer",
                       fontSize: "0.78rem",
                       fontWeight: 600,
-                      color: T.textSub,
+                      color: "#1F2937",
                       padding: "8px 0",
                       userSelect: "none",
                       listStyle: "none",
                       display: "flex",
                       alignItems: "center",
-                      gap: 6,
+                      justifyContent: "space-between",
                     }}
                   >
+                    <span>View Calculation Details</span>
                     <svg
                       width="12"
                       height="12"
@@ -3004,12 +3010,10 @@ export default function App() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    View Calculation Details
                   </summary>
                   <div
                     style={{
                       paddingTop: 8,
-                      borderTop: `1px solid ${T.border}`,
                       marginTop: 8,
                     }}
                   >
